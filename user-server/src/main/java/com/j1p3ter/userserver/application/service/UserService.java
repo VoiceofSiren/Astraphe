@@ -74,7 +74,7 @@ public class UserService {
         }
 
         // [3] login 성공 시 accessToken 발급
-        String accessToken = jwtUtil.createToken(user.getId(), user.getUserRole());
+        String accessToken = jwtUtil.createAccessToken(user.getId(), user.getUserRole());
         response.setHeader("Authorization", accessToken);
 
         // [4] 응답 반환
