@@ -27,7 +27,7 @@ public class JwtUtil {
     // Access Token 만료 시간
     private final long ACCESS_TOKEN_EXPIRATION_TIME = 60 * 60 * 1000L; // 60분
     // Refresh Token 만료 시간
-    private final long REFRESH_TOKEN_EXPIRATION_TIME = 7 * 24 * ACCESS_TOKEN_EXPIRATION_TIME;
+    private final long REFRESH_TOKEN_EXPIRATION_TIME = 30 * 24 * ACCESS_TOKEN_EXPIRATION_TIME; // 30일
 
     @Value("${jwt.secret.key}") // Base64 Encode 한 SecretKey
     private String secretKey;
@@ -65,6 +65,20 @@ public class JwtUtil {
                         .setIssuedAt(date)
                         .signWith(key, signatureAlgorithm)
                         .compact();
+    }
+
+    // Token 유효성 검사
+    public Claims validateToken(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (JwtException | IllegalArgumentException e) {
+            log.error("Invalid Jwt Token.", e);
+            return null;
+        }
     }
 
 }
